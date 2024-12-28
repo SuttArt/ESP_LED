@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP8266 Web</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <p>Це HTML-файл, завантажений на ESP8266.</p>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP8266 Управління стрічкою</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>ESP8266 Управління стрічкою</h1>
+    <p>Натисніть кнопку для виконання дії:</p>
+    <button onclick="changeColor()">Змінити колір</button>
+    <button onclick="turnOff()">Вимкнути стрічку</button>
+    <p id="status">Стан: очікування дій...</p>
+
+    <script>
+        // Відправка POST-запиту
+        async function postData(url, body = null) {
+            const options = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            };
+
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                document.getElementById("status").innerText = `Стан: ${data.status}, Дія: ${data.action}`;
+                console.log(data);
+            } catch (error) {
+                document.getElementById("status").innerText = "Стан: помилка зв'язку";
+                console.error("Помилка:", error);
+            }
+        }
+
+        // Змінити колір
+        function changeColor() {
+            postData("/api/color");
+        }
+
+        // Вимкнути стрічку
+        function turnOff() {
+            postData("/api/off");
+        }
+    </script>
+</body>
+</html>
